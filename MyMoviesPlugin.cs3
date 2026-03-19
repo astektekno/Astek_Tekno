@@ -1,0 +1,22 @@
+package com.lagradost.cloudstream3.plugins
+
+import com.lagradost.cloudstream3.*
+import com.lagradost.cloudstream3.utils.*
+
+class MyMoviesPlugin : MainAPI() {
+    override var mainUrl = "https://ornek-site.com"
+    override var name = "MyMoviesPlugin"
+    override var lang = "tr"
+    override val supportedTypes = setOf(TvType.Movie)
+
+    override suspend fun search(query: String): List<SearchResponse> {
+        return listOf(
+            MovieSearchResponse(
+                name = "Deneme Filmi",
+                url = "$mainUrl/film/deneme",
+                apiName = name,
+                type = TvType.Movie
+            )
+        )
+    }
+}

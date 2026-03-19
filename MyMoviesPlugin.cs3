@@ -1,10 +1,1 @@
-{
-  "name": "Benim Depom",
-  "plugins": [
-    {
-      "name": "MyMoviesPlugin",
-      "version": "1.0.0",
-      "url": "https://raw.githubusercontent.com/Astek_Tekno/cloudstream-plugins/master/MyMoviesPlugin.cs3"
-    }
-  ]
-}
+.cs3

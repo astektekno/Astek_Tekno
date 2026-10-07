@@ -1,3 +1,78 @@
-.github
-workflows
-build.yml
+name: Build CloudStream Plugins
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Kaynak kodunu al
+        uses: actions/checkout@v4
+        with:
+          path: source
+
+      - name: Builds branch'ini al
+        uses: actions/checkout@v4
+        continue-on-error: true
+        with:
+          ref: builds
+          path: builds
+
+      - name: JDK 21 kur
+        uses: actions/setup-java@v4
+        with:
+          java-version: 21
+          distribution: zulu
+          cache: gradle
+
+      - name: Android SDK hazırla
+        uses: android-actions/setup-android@v3
+
+      - name: Eklentileri derle
+        working-directory: source
+        run: |
+          chmod +x gradlew
+          echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
+          ./gradlew buildAll --continue --stacktrace
+
+      - name: CS3 ve plugins.json dosyalarını hazırla
+        run: |
+          mkdir -p builds
+
+          find source -name "*.cs3" -exec cp -f {} builds/ \;
+
+          if [ -f source/build/plugins.json ]; then
+            cp -f source/build/plugins.json builds/plugins.json
+          elif [ -f source/plugins.json ]; then
+            cp -f source/plugins.json builds/plugins.json
+          fi
+
+          cp -f source/repo.json builds/repo.json || true
+
+          echo "Builds içeriği:"
+          ls -lah builds
+
+      - name: Builds branch'ine gönder
+        run: |
+          cd builds
+
+          git init
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git checkout -B builds
+          git add .
+
+          git commit -m "Build plugins" || echo "Değişiklik yok"
+
+          git remote add origin "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
+
+          git push origin builds --force

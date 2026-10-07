@@ -1,8 +1,8 @@
 {
-  "name": "Astek_Tekno CloudStream Repository",
-  "description": "Astek_Tekno tarafından sağlanan Türkçe dizi, film ve anime eklenti deposu",
+  "name": "Astek_Tekno",
+  "description": "Astek_Tekno",
   "manifestVersion": 1,
   "pluginLists": [
-    "https://raw.githubusercontent.com/Astek_Tekno/AstekCloud/main/builds/plugins.json"
+    "https://raw.githubusercontent.com/astektekno/Astek_Tekno/refs/heads/main/plugins.json"
   ]
 }
